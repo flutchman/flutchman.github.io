@@ -3,7 +3,9 @@
 ## Thanks
 
 [GOG Galaxy 2.0 Export Script](https://github.com/AB1908/GOG-Galaxy-Export-Script)
+
 [GOG Galaxy 2.0 CSV export HTML5 formatter](https://github.com/Varstahl/GOG-Galaxy-HTML5-exporter)
+
 [Wget](http://gnuwin32.sourceforge.net/packages/wget.htm)
 
 ## Generate
