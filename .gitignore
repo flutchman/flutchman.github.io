@@ -1,0 +1,9 @@
+## Personal files
+gameDB.csv
+imagelist.txt
+## libs
+csv_parser.py
+galaxy_library_export.py
+## downloaded assets
+images/*
+!images/.gitkeep
