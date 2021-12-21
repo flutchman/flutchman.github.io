@@ -2,7 +2,7 @@
 
 ## Prerequisite
 
-install python 
+install [python](https://www.python.org/downloads/windows/) 
 
 ## Thanks
 
