@@ -1,5 +1,9 @@
 # Flutchman's Game List
 
+## Prerequisite
+
+install python 
+
 ## Thanks
 
 [GOG Galaxy 2.0 Export Script](https://github.com/AB1908/GOG-Galaxy-Export-Script)
