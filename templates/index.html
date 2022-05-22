@@ -12,7 +12,7 @@
             <input type="search" id="search" placeholder="Search…">
             <input type="range" id="width" min="32" max="342" value="140">
             <input type="range" id="spacing" min="0" max="128" value="12">
-            <button id="jsonExport" onclick="exportJson()">Export</button>
+            <input type="button" id="jsonExport" onclick="exportJson(); return false;" value="Export">
         </header>
         <div id="overlay"></div>{debug}
         <section id="games">
