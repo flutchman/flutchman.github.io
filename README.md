@@ -1,6 +1,6 @@
 # Flutchman's Game List
 
-Access it here : [flutchman.github.io](flutchman.github.io)
+Access it here : [flutchman.github.io](https://flutchman.github.io/)
 
 ## Prerequisite
 
