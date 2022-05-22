@@ -1,3 +1,7 @@
+// Global game list that can be used to export or randomly select a game in the list
+let gameListAsJson = [];
+let gameById = [];
+
 document.addEventListener("DOMContentLoaded", function() {
     const corners = ['tl', 'tr', 'bl', 'br'];
     const overlay = document.getElementById('overlay');
@@ -8,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const gameSize = document.getElementById('width');
     const gameSpacing = document.getElementById('spacing');
 
-    var X = 0, // Last known horizontal position
+    let X = 0, // Last known horizontal position
         Y = 0, // Last known vertical position
         bCursorShow = true, // Should the cursor be shown again?
         lastElement = {
@@ -17,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     /* Python equivalent of string formatting */
     String.prototype.format = function() {
-        var args = arguments;
+        let args = arguments;
         this.unkeyed_index = 0;
         return this.replace(/\{(\w*)\}/g, function(match, key) {
             if (key === '') {
@@ -27,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (key == +key) {
                 return args[key] !== 'undefined' ? args[key] : match;
             } else {
-                for (var i = 0; i < args.length; i++) {
+                for (let i = 0; i < args.length; i++) {
                     if (typeof args[i] === 'object' && typeof args[i][key] !== 'undefined') {
                         return args[i][key];
                     }
@@ -48,14 +52,14 @@ document.addEventListener("DOMContentLoaded", function() {
             const bRight = (w < (x + t.offsetWidth)) && (0 <= (x - t.offsetWidth));
             const bBottom = (h < (y + t.offsetHeight)) && (0 <= (y - t.offsetHeight));
             const pos = bRight + 2 * bBottom; // Boolean to bit scalar
-            var newX = x - (bRight ? t.offsetWidth : 0);
-            var newY = y - (bBottom ? t.offsetHeight : 0);
+            let newX = x - (bRight ? t.offsetWidth : 0);
+            let newY = y - (bBottom ? t.offsetHeight : 0);
             Object.assign(t.style, {
                 left: newX + 'px',
                 top: newY + 'px'
             });
 
-            for (var i = 0; i < 4; i++) {
+            for (let i = 0; i < 4; i++) {
                 t.classList[i == pos ? 'add' : 'remove'](corners[i]);
             }
         }
@@ -86,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Wrapper for the continuous update of the range input controls
     function hookRangeChange(r, f) {
-        var n, c, m;
+        let n, c, m;
         r.addEventListener("input", function(e) {
             n = 1;
             c = e.target.value;
@@ -130,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Perform search on the games
     function onSearch(event) {
-        var query = event.target.value.toLowerCase().replace(/^\s+|\s+$/g, '').replace(/\s{2,}/g, ' ');
+        let query = event.target.value.toLowerCase().replace(/^\s+|\s+$/g, '').replace(/\s{2,}/g, ' ');
         if (query == onSearch.lastQuery)
             return;
         onSearch.lastQuery = query;
@@ -147,8 +151,8 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             // Build a list of results
             const filteredQuery = query.replace(/\s+/, '.*?');
-            var results = [];
-            for (var i = 0; i < gameList.length; i++) {
+            let results = [];
+            for (let i = 0; i < gameList.length; i++) {
                 const searchData = JSON.parse(gameList[i].dataset.search);
                 for (const source of searchData) {
                     if (-1 !== source.search(filteredQuery)) {
@@ -185,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         // Based on current mouse coordinates find the relative game card
-        var element = {
+        let element = {
             'id': null
         };
         if ('mouseout' !== event.type) {
@@ -232,6 +236,27 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Generate game list as Json
+    function getGameListAsJson() {
+        // fetch games names based on html items
+        let globalList = document.getElementsByClassName("game");
+        // store list if not already filled
+        if (gameListAsJson.length === 0) {
+            for (let item of globalList) {
+                let currentStr = item.dataset.search;
+                // clean names
+                currentStr = currentStr.replace('["', "");
+                currentStr = currentStr.replace('"]', "");
+                gameListAsJson.push(currentStr);
+                gameById[currentStr] = item.id;
+            }
+            // order alphabetically (should already be done but.. meh...)
+            gameListAsJson.sort(function(gameA, gameB) {
+                return gameA > gameB ? 1 : -1;
+            });
+        }
+    }
+
     // Setup the handlers
     overlay.addEventListener('mousemove', onMouseEvent);
     overlay.addEventListener('mouseout', onMouseEvent);
@@ -241,13 +266,15 @@ document.addEventListener("DOMContentLoaded", function() {
     hookRangeChange(gameSpacing, onChangeSpacing);
     gameSearch.addEventListener('blur', onSearchCancel);
     gameSearch.addEventListener('input', onSearch);
+    // generate game list as Json on page load
+    getGameListAsJson();
 
     // Replace the SVG icon placeholders in reverse order to avoid position inconsistencies and skipped icons
     (function replaceSVGplaceholders() {
         p = {} // cache
         // class="pi pi-[platformName]"
         const icons = document.getElementsByClassName('pi');
-        for (var i = icons.length - 1; 0 <= i; i--) {
+        for (let i = icons.length - 1; 0 <= i; i--) {
             const platform = icons[i].classList[1].substr(3);
             const platforms = Array.from(icons[i].classList).slice(1).join(' ');
             try {
@@ -274,24 +301,10 @@ document.addEventListener("DOMContentLoaded", function() {
 /*
  * Export and download game list as JSON
  * When using "Export" button, it will generate and download a json list based on you items
- */
+*/
 function exportJson() {
-    // fetch games names based on html items
-    let globalList = document.getElementsByClassName("game");
-    // store list
-    let gameList = [];
-    for (let item of globalList) {
-        let currentStr = item.dataset.search;
-        currentStr = currentStr.replace('["', "");
-        currentStr = currentStr.replace('"]', "");
-        gameList.push(currentStr);
-    }
-    // order alphabetically (should already be done but beeing sure..)
-    gameList.sort(function(gameA, gameB) {
-        return gameA > gameB ? 1 : -1;
-    });
     // extract to json
-    let jsonList = JSON.stringify(gameList);
+    let jsonList = JSON.stringify(gameListAsJson);
     // Create blob to download by browser
     let dataBlob = new Blob([jsonList], {
         type: 'text/json'
@@ -299,9 +312,19 @@ function exportJson() {
     let event = document.createEvent('MouseEvents');
     // for this to work, we send gameList blob into an 'a' tag
     let aTag = document.createElement('a');
-    aTag.download = "gameList.json";
+    aTag.download = "gameList_" + (new Date()).toISOString().split('T')[0] + ".json";
     aTag.href = window.URL.createObjectURL(dataBlob);
     aTag.dataset.downloadurl = ['text/json', aTag.download, aTag.href].join(':');
     event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     aTag.dispatchEvent(event);
 };
+
+/*
+ * Select a random game based on current list
+ */
+function fetchRandom() {
+    let maxLength = gameListAsJson.length - 1;
+    let selectedGameId = Math.floor(Math.random() * maxLength);
+    let selectedGameDiv = document.getElementById(gameById[gameListAsJson[selectedGameId]]);
+    document.getElementById("randomizeText").innerHTML = selectedGameDiv.querySelector('h2').innerHTML + " " + selectedGameDiv.querySelector("div.platforms").innerHTML;
+}

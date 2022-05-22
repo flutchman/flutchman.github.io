@@ -10,206 +10,243 @@ $tooltip-border-hi: 3px;
 $data-font-size: 1em;
 $data-interlinea: 1.4;
 $data-margin: 1em * $data-interlinea;
-$family1: 'Roboto';
-$family2: 'Roboto Slab';
+$family1: "Roboto";
+$family2: "Roboto Slab";
 $svg-height: 2em;
 $color: #fff;
 $highlight: #d18bf3;
 $color-darker: darken($color, 12%);
 $color-dark: darken($color, 24%);
 
-html, body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    pointer-events: none;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  pointer-events: none;
 }
 
 body {
-    padding: 1rem;
-    font-family: $family2;
-    color: $color-darker;
-    fill: $color-darker;
+  padding: 1rem;
+  font-family: $family2;
+  color: $color-darker;
+  fill: $color-darker;
 }
 
-body, #overlay {
-    background: #222;
+body,
+#overlay {
+  background: #222;
 }
 
 a {
-    color: rgb(45, 150, 236) !important;
-    text-decoration: none;
+  color: rgb(45, 150, 236) !important;
+  text-decoration: none;
 }
 
 /* Platform icons */
 svg.platforms {
-    height: #{$svg-height};
-    vertical-align: middle;
-    /* Filled icons look brighter to the eye compared to the rest of the elements,
+  height: #{$svg-height};
+  vertical-align: middle;
+  /* Filled icons look brighter to the eye compared to the rest of the elements,
        so we rebalance the optical illusion to the eye */
-    fill: darken($highlight, 8%);
-    &.pi-playstation2 { height: #{0.5 * $svg-height}; }
+  fill: darken($highlight, 8%);
+  &.pi-playstation2 {
+    height: #{0.5 * $svg-height};
+  }
 }
 
 /* Controls */
 #controls {
-    pointer-events: initial;
-    display: none;
-    position: sticky;
-    z-index: 10;
-    top: 1rem;
-    text-align: center;
-    input {
-        vertical-align: middle;
-        margin: 0 (1rem / 2);
-    }
-    [type='search'] {
-        padding: 0.6em;
-        border-radius: 0.4em;
-        width: 40vw;
-        background: rgba(0, 0, 0, .75);
-        color: $color-darker;
-        border: none;
-        font-size: 1em;
-    }
-    &.visible {
-        display: block;
-    }
+  pointer-events: initial;
+  display: none;
+  position: sticky;
+  z-index: 10;
+  top: 1rem;
+  text-align: center;
+  input {
+    vertical-align: middle;
+    margin: 0 (1rem / 2);
+  }
+  [type="search"] {
+    padding: 0.6em;
+    border-radius: 0.4em;
+    width: 40vw;
+    background: rgba(0, 0, 0, 0.75);
+    color: $color-darker;
+    border: none;
+    font-size: 1em;
+  }
+  &.visible {
+    display: block;
+  }
 }
 
 #overlay {
-    pointer-events: initial;
-    z-index: 5;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    opacity: 1;
-    transition: opacity ease 1s;
-    cursor: progress;
+  pointer-events: initial;
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 1;
+  transition: opacity ease 1s;
+  cursor: progress;
 }
 
 /* Game list */
 #games {
-    --cover-width: #{$cover-width};
-    --cover-spacing: #{$cover-spacing};
-    margin-top: 1rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(var(--cover-width), max-content));
-    grid-gap: var(--cover-spacing);
-    justify-content: center;
-    padding: initial;
-    h2, dt {
-        font-family: $family1;
-        font-variant: small-caps;
+  --cover-width: #{$cover-width};
+  --cover-spacing: #{$cover-spacing};
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(var(--cover-width), max-content)
+  );
+  grid-gap: var(--cover-spacing);
+  justify-content: center;
+  padding: initial;
+  h2,
+  dt {
+    font-family: $family1;
+    font-variant: small-caps;
+  }
+  &.search-results .game {
+    display: none;
+    &.hit {
+      display: inline-block;
     }
-    &.search-results .game {
-        display: none;
-        &.hit {
-            display: inline-block;
-        }
-    }
+  }
 }
 
 /* Game card */
 .game {
-    pointer-events: initial;
-    > * {
-        pointer-events: none;
-    }
-    width: var(--cover-width);
-    display: inline-block;
-    background-size: cover;
-    box-shadow:
-        inset 0px -1px calc(var(--cover-width) * .4) rgba(255,255,255,0.0666),  /* light gloss */
-        3px 4px 9px rgba(0, 0, 0, 0.4);  /* drop shadow */
-    /*aspect-ratio: 342 / 482; /* Currently unsupported by most browsers, gotta hack it with padding-top below */
+  pointer-events: initial;
+  > * {
+    pointer-events: none;
+  }
+  width: var(--cover-width);
+  display: inline-block;
+  background-size: cover;
+  box-shadow: inset 0px -1px calc(var(--cover-width) * 0.4) rgba(255, 255, 255, 0.0666),
+    /* light gloss */ 3px 4px 9px rgba(0, 0, 0, 0.4); /* drop shadow */
+  /*aspect-ratio: 342 / 482; /* Currently unsupported by most browsers, gotta hack it with padding-top below */
+  &::after {
+    content: "";
+    display: block;
+    padding-top: 140.93567251461988304093567251462%;
+  }
+  &.hover {
     &::after {
-        content: '';
-        display: block;
-        padding-top: 140.93567251461988304093567251462%;
-    }
-    &.hover {
-        &::after {
-            background: $highlight;
-            z-index: 2;
-            mix-blend-mode: hard-light;
-        }
-        .data {
-            display: block;
-            z-index: 3;
-        }
+      background: $highlight;
+      z-index: 2;
+      mix-blend-mode: hard-light;
     }
     .data {
-        position: fixed;
-        top: 0;
-        left: 0;
-        max-width: 33vw;
-        display: none;
-        text-shadow: 1px 1px 0 black;
-        background: rgba(0, 0, 0, .75);
-        padding: 1.2em;
-        border-radius: #{$tooltip-radius};
-        border: solid calc(#{$tooltip-border-lo} * 2) rgba(lighten(#d18bf3, 15%), .8);
-        box-shadow: 4px 7px 12px rgba(0, 0, 0, .66);
-        font-size: #{$data-font-size};
-        line-height: #{$data-interlinea};
-        h2 {
-            font-size: 160%;
-            margin: 0;
-            font-weight: normal;
-            color: $color;
-        }
-        dl {
-            margin: #{$data-margin} 0 0 0;
-        }
-        dt {
-            display: inline-block;
-            font-weight: bold;
-            font-size: 120%;
-            color: $highlight;
-            &:after {
-                display: inline-block;
-                content: ':';
-                font-size: 80%;
-            }
-        }
-        dd {
-            margin-left: 0;
-            display: inline;
-            color: $color-dark;
-            &:after {
-                display: block;
-                content: '';
-            }
-        }
-
-        // Square corners and wider corner borders
-        &.tl { border-width: #{$tooltip-border-lo}; border-top-left-radius: 0; }
-        &.tr { border-width: #{$tooltip-border-lo}; border-top-right-radius: 0; }
-        &.bl { border-width: #{$tooltip-border-lo}; border-bottom-left-radius: 0; }
-        &.br { border-width: #{$tooltip-border-lo}; border-bottom-right-radius: 0; }
-        &.tl, &.bl { border-left-width:   #{$tooltip-border-hi}; }
-        &.tr, &.br { border-right-width:  #{$tooltip-border-hi}; }
-        &.tl, &.tr { border-top-width:    #{$tooltip-border-hi}; }
-        &.bl, &.br { border-bottom-width: #{$tooltip-border-hi}; }
-
-        .description {
-            margin-top: #{$data-margin};
-            p, ul, ol {
-                margin: 0;
-                padding: 0;
-                font-size: 1em;
-            }
-            ul, ol {
-                padding-left: #{$data-margin};
-            }
-            .spaced- {
-                @for $i from 1 through 5 {
-                    &#{$i} { margin-top: #{$i * $data-margin}; }
-                }
-            }
-        }
+      display: block;
+      z-index: 3;
     }
+  }
+  .data {
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-width: 33vw;
+    display: none;
+    text-shadow: 1px 1px 0 black;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 1.2em;
+    border-radius: #{$tooltip-radius};
+    border: solid calc(#{$tooltip-border-lo} * 2)
+      rgba(lighten(#d18bf3, 15%), 0.8);
+    box-shadow: 4px 7px 12px rgba(0, 0, 0, 0.66);
+    font-size: #{$data-font-size};
+    line-height: #{$data-interlinea};
+    h2 {
+      font-size: 160%;
+      margin: 0;
+      font-weight: normal;
+      color: $color;
+    }
+    dl {
+      margin: #{$data-margin} 0 0 0;
+    }
+    dt {
+      display: inline-block;
+      font-weight: bold;
+      font-size: 120%;
+      color: $highlight;
+      &:after {
+        display: inline-block;
+        content: ":";
+        font-size: 80%;
+      }
+    }
+    dd {
+      margin-left: 0;
+      display: inline;
+      color: $color-dark;
+      &:after {
+        display: block;
+        content: "";
+      }
+    }
+
+    // Square corners and wider corner borders
+    &.tl {
+      border-width: #{$tooltip-border-lo};
+      border-top-left-radius: 0;
+    }
+    &.tr {
+      border-width: #{$tooltip-border-lo};
+      border-top-right-radius: 0;
+    }
+    &.bl {
+      border-width: #{$tooltip-border-lo};
+      border-bottom-left-radius: 0;
+    }
+    &.br {
+      border-width: #{$tooltip-border-lo};
+      border-bottom-right-radius: 0;
+    }
+    &.tl,
+    &.bl {
+      border-left-width: #{$tooltip-border-hi};
+    }
+    &.tr,
+    &.br {
+      border-right-width: #{$tooltip-border-hi};
+    }
+    &.tl,
+    &.tr {
+      border-top-width: #{$tooltip-border-hi};
+    }
+    &.bl,
+    &.br {
+      border-bottom-width: #{$tooltip-border-hi};
+    }
+
+    .description {
+      margin-top: #{$data-margin};
+      p,
+      ul,
+      ol {
+        margin: 0;
+        padding: 0;
+        font-size: 1em;
+      }
+      ul,
+      ol {
+        padding-left: #{$data-margin};
+      }
+      .spaced- {
+        @for $i from 1 through 5 {
+          &#{$i} {
+            margin-top: #{$i * $data-margin};
+          }
+        }
+      }
+    }
+  }
 }

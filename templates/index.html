@@ -13,6 +13,8 @@
             <input type="range" id="width" min="32" max="342" value="140">
             <input type="range" id="spacing" min="0" max="128" value="12">
             <button id="jsonExport" onclick="exportJson()">Export</button>
+            <button id="fetchRandom" onclick="fetchRandom()" data-modal="modalRandomize">Choose a game</button>
+            <div style="margin-top: 15px;" id="randomizeText"></div>
         </header>
         <div id="overlay"></div>{debug}
         <section id="games">
