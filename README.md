@@ -1,5 +1,7 @@
 # Flutchman's Game List
 
+Access it here : [flutchman.github.io](flutchman.github.io)
+
 ## Prerequisite
 
 1. Optional: Install [Git Bash](https://gitforwindows.org/)
