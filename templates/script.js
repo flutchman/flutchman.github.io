@@ -1,26 +1,28 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const corners     = ['tl', 'tr', 'bl', 'br'];
-    const overlay     = document.getElementById('overlay');
-    const controls    = document.getElementById('controls');
-    const games       = document.getElementById('games');
-    const gameList    = games.children;
-    const gameSearch  = document.getElementById('search');
-    const gameSize    = document.getElementById('width');
+    const corners = ['tl', 'tr', 'bl', 'br'];
+    const overlay = document.getElementById('overlay');
+    const controls = document.getElementById('controls');
+    const games = document.getElementById('games');
+    const gameList = games.children;
+    const gameSearch = document.getElementById('search');
+    const gameSize = document.getElementById('width');
     const gameSpacing = document.getElementById('spacing');
 
-    var X = 0,                          // Last known horizontal position
-        Y = 0,                          // Last known vertical position
-        bCursorShow = true,             // Should the cursor be shown again?
-        lastElement = {'id': null};     // Last element with an active tooltip
+    var X = 0, // Last known horizontal position
+        Y = 0, // Last known vertical position
+        bCursorShow = true, // Should the cursor be shown again?
+        lastElement = {
+            'id': null
+        }; // Last element with an active tooltip
 
     /* Python equivalent of string formatting */
     String.prototype.format = function() {
         var args = arguments;
         this.unkeyed_index = 0;
-        return this.replace(/\{(\w*)\}/g, function(match, key) { 
+        return this.replace(/\{(\w*)\}/g, function(match, key) {
             if (key === '') {
-            key = this.unkeyed_index;
-            this.unkeyed_index++
+                key = this.unkeyed_index;
+                this.unkeyed_index++
             }
             if (key == +key) {
                 return args[key] !== 'undefined' ? args[key] : match;
@@ -45,10 +47,13 @@ document.addEventListener("DOMContentLoaded", function() {
             // the view, and there's enough space to fit it in the other direction.
             const bRight = (w < (x + t.offsetWidth)) && (0 <= (x - t.offsetWidth));
             const bBottom = (h < (y + t.offsetHeight)) && (0 <= (y - t.offsetHeight));
-            const pos = bRight + 2 * bBottom;  // Boolean to bit scalar
+            const pos = bRight + 2 * bBottom; // Boolean to bit scalar
             var newX = x - (bRight ? t.offsetWidth : 0);
             var newY = y - (bBottom ? t.offsetHeight : 0);
-            Object.assign(t.style, {left: newX + 'px', top: newY + 'px'});
+            Object.assign(t.style, {
+                left: newX + 'px',
+                top: newY + 'px'
+            });
 
             for (var i = 0; i < 4; i++) {
                 t.classList[i == pos ? 'add' : 'remove'](corners[i]);
@@ -80,10 +85,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Wrapper for the continuous update of the range input controls
-    function hookRangeChange(r,f) {
-        var n,c,m;
-        r.addEventListener("input",function(e){n=1;c=e.target.value;if(c!=m)f(e);m=c;});
-        r.addEventListener("change",function(e){if(!n)f(e);});
+    function hookRangeChange(r, f) {
+        var n, c, m;
+        r.addEventListener("input", function(e) {
+            n = 1;
+            c = e.target.value;
+            if (c != m) f(e);
+            m = c;
+        });
+        r.addEventListener("change", function(e) {
+            if (!n) f(e);
+        });
     }
 
     // Update the game card width
@@ -100,9 +112,9 @@ document.addEventListener("DOMContentLoaded", function() {
     function onToggleControls(event) {
         if (event.ctrlKey) {
             if (32 == event.keyCode) {
-                controls.classList.toggle('visible');  // Ctrl+Space
+                controls.classList.toggle('visible'); // Ctrl+Space
             } else if (70 == event.keyCode) {
-                controls.classList.add('visible');  // Ctrl+F
+                controls.classList.add('visible'); // Ctrl+F
             }
 
             // Focus on the search bar, if visible
@@ -162,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function() {
             onSearch.results = results;
         }
     }
-    onSearch.results = [];  // Init static variable
+    onSearch.results = []; // Init static variable
 
     // Raycasting for easier tooltip management
     function onMouseEvent(event) {
@@ -173,7 +185,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         // Based on current mouse coordinates find the relative game card
-        var element = {'id': null};
+        var element = {
+            'id': null
+        };
         if ('mouseout' !== event.type) {
             const elements = document.elementsFromPoint(X, Y);
             // .overlay #game-ID html
@@ -189,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // We're not on the same card as before, hide previous card's tooltip
             if (lastElement.id) {
                 lastElement.classList.remove('hover');
-                setTimeout(function(){
+                setTimeout(function() {
                     if (bCursorShow)
                         overlay.style.cursor = 'initial';
                 }, 100);
@@ -209,45 +223,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 overlay.style.cursor = 'none';
                 element.classList.add('hover');
                 // Delay the visualisation to remove glitches
-                setTimeout(function(e) {e.style.visibility = 'visible';}, 1, t);
+                setTimeout(function(e) {
+                    e.style.visibility = 'visible';
+                }, 1, t);
             }
 
             lastElement = element;
         }
     }
-    
-    /*
-    * Export and download game list as JSON
-    * When using "Export" button, it will generate and download a json list based on you items
-    */
-    function exportJson() {
-        // fetch games names based on html items
-        let globalList = document.getElementsByClassName("game");
-        // store list
-        let gameList = [];
-        for (let item of globalList) {
-            let currentStr = item.dataset.search;
-            currentStr = currentStr.replace('["', "");
-            currentStr = currentStr.replace('"]', "");
-            gameList.push(currentStr);
-        }
-        // order alphabetically (should already be done but beeing sure..)
-        gameList.sort(function (gameA, gameB) {
-            return gameA > gameB ? 1 : -1;
-        });
-        // extract to json
-        let jsonList = JSON.stringify(gameList);
-        // Create blob to download by browser
-        let dataBlob = new Blob([jsonList], {type: 'text/json'});
-        let event = document.createEvent('MouseEvents');
-        // for this to work, we send gameList blob into an 'a' tag
-        let aTag = document.createElement('a');
-        aTag.download = "gameList.json";
-        aTag.href = window.URL.createObjectURL(dataBlob);
-        aTag.dataset.downloadurl = ['text/json', aTag.download, aTag.href].join(':');
-        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        aTag.dispatchEvent(event);
-    };
 
     // Setup the handlers
     overlay.addEventListener('mousemove', onMouseEvent);
@@ -261,10 +244,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Replace the SVG icon placeholders in reverse order to avoid position inconsistencies and skipped icons
     (function replaceSVGplaceholders() {
-        p = {}  // cache
+        p = {} // cache
         // class="pi pi-[platformName]"
         const icons = document.getElementsByClassName('pi');
-        for (var i = icons.length-1; 0 <= i; i--) {
+        for (var i = icons.length - 1; 0 <= i; i--) {
             const platform = icons[i].classList[1].substr(3);
             const platforms = Array.from(icons[i].classList).slice(1).join(' ');
             try {
@@ -279,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     );
                 }
                 icons[i].outerHTML = p[platform];
-            } catch(e) {}
+            } catch (e) {}
         }
     })();
 
@@ -287,3 +270,38 @@ document.addEventListener("DOMContentLoaded", function() {
     overlay.style.opacity = 0;
     overlay.style.cursor = 'initial';
 });
+
+/*
+ * Export and download game list as JSON
+ * When using "Export" button, it will generate and download a json list based on you items
+ */
+function exportJson() {
+    // fetch games names based on html items
+    let globalList = document.getElementsByClassName("game");
+    // store list
+    let gameList = [];
+    for (let item of globalList) {
+        let currentStr = item.dataset.search;
+        currentStr = currentStr.replace('["', "");
+        currentStr = currentStr.replace('"]', "");
+        gameList.push(currentStr);
+    }
+    // order alphabetically (should already be done but beeing sure..)
+    gameList.sort(function(gameA, gameB) {
+        return gameA > gameB ? 1 : -1;
+    });
+    // extract to json
+    let jsonList = JSON.stringify(gameList);
+    // Create blob to download by browser
+    let dataBlob = new Blob([jsonList], {
+        type: 'text/json'
+    });
+    let event = document.createEvent('MouseEvents');
+    // for this to work, we send gameList blob into an 'a' tag
+    let aTag = document.createElement('a');
+    aTag.download = "gameList.json";
+    aTag.href = window.URL.createObjectURL(dataBlob);
+    aTag.dataset.downloadurl = ['text/json', aTag.download, aTag.href].join(':');
+    event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    aTag.dispatchEvent(event);
+};
