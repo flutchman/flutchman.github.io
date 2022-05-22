@@ -215,6 +215,39 @@ document.addEventListener("DOMContentLoaded", function() {
             lastElement = element;
         }
     }
+    
+    /*
+    * Export and download game list as JSON
+    * When using "Export" button, it will generate and download a json list based on you items
+    */
+    function exportJson() {
+        // fetch games names based on html items
+        let globalList = document.getElementsByClassName("game");
+        // store list
+        let gameList = [];
+        for (let item of globalList) {
+            let currentStr = item.dataset.search;
+            currentStr = currentStr.replace('["', "");
+            currentStr = currentStr.replace('"]', "");
+            gameList.push(currentStr);
+        }
+        // order alphabetically (should already be done but beeing sure..)
+        gameList.sort(function (gameA, gameB) {
+            return gameA > gameB ? 1 : -1;
+        });
+        // extract to json
+        let jsonList = JSON.stringify(gameList);
+        // Create blob to download by browser
+        let dataBlob = new Blob([jsonList], {type: 'text/json'});
+        let event = document.createEvent('MouseEvents');
+        // for this to work, we send gameList blob into an 'a' tag
+        let aTag = document.createElement('a');
+        aTag.download = "gameList.json";
+        aTag.href = window.URL.createObjectURL(dataBlob);
+        aTag.dataset.downloadurl = ['text/json', aTag.download, aTag.href].join(':');
+        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        aTag.dispatchEvent(event);
+    };
 
     // Setup the handlers
     overlay.addEventListener('mousemove', onMouseEvent);
